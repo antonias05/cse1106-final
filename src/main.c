@@ -1,44 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <pigpio.h>
 
 #define LED_PIN 17
 #define FILE_NAME "temperature_log.csv"
 
-/*
-int main(void){
-    int temp[3];
-    char warn;
-
-    for (int i = 0; i < 3; i++){
-        printf("Enter classroom temp %d: ", i + 1);
-        scanf("%d", &temp[i]);
-    }
-
-    for (int i = 0; i < 3; i++){
-        if (temp[i] < 68 || temp[i] > 76){
-            warn = 'W';
-        } else {
-            warn = 'N';
-        }
-
-        if (warn == 'W'){
-            printf("%d F    WARNING     ON\n", temp[i]);
-        } else {
-            printf("%d F    NORMAL     OFF\n", temp[i]);
-        }
-    }
-
-    
-
-    return 0;
-}*/
-
 /* Function to control LED on GPIO 17 */
 void setLED(int on) {
+    gpioSetMode(LED_PIN, PI_OUTPUT);
     if (on == 1) {
-        gpioSetMode(LED_PIN, PI_OUTPUT);
         gpioWrite(LED_PIN, 1);
     } else {
         gpioWrite(LED_PIN, 0);
@@ -116,6 +88,12 @@ int main() {
     int choice, result;
     char status[20];
 
+    /* Initialize pigpio library */
+    if (gpioInitialise() < 0) {
+        printf("pigpio initialization failed!\n");
+        return 1;
+    }
+
     /* Start with LED off */
     setLED(0);
 
@@ -134,6 +112,7 @@ int main() {
         if (scanf("%d", &choice) != 1) {
             printf("Invalid input!\n");
             setLED(0);
+            gpioTerminate();
             return 1;
         }
 
@@ -143,6 +122,7 @@ int main() {
                 if (scanf("%f", &temperature) != 1) {
                     printf("Invalid temperature!\n");
                     setLED(0);
+                    gpioTerminate();
                     return 1;
                 }
                 
@@ -168,12 +148,14 @@ int main() {
                 if (scanf("%f", &newMin) != 1) {
                     printf("Invalid input!\n");
                     setLED(0);
+                    gpioTerminate();
                     return 1;
                 }
                 printf("Enter new maximum temperature: ");
                 if (scanf("%f", &newMax) != 1) {
                     printf("Invalid input!\n");
                     setLED(0);
+                    gpioTerminate();
                     return 1;
                 }
 
@@ -195,6 +177,9 @@ int main() {
                 break;
 
             case 5:
+                setLED(0);
+                printf("\nExiting program...\n");
+                printf("Warning LED: OFF\n");
                 gpioTerminate();
                 break;
 
