@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <unistd.h>
+#include <pigpio.h>
 
+#define LED_PIN 17
 #define FILE_NAME "temperature_log.csv"
 
 /*
@@ -36,9 +38,10 @@ int main(void){
 /* Function to control LED on GPIO 17 */
 void setLED(int on) {
     if (on == 1) {
-        system("pinctrl set 17 op dh");
+        gpioSetMode(LED_PIN, PI_OUTPUT);
+        gpioWrite(LED_PIN, 1);
     } else {
-        system("pinctrl set 17 op dl");
+        gpioWrite(LED_PIN, 0);
     }
 }
 
@@ -192,9 +195,7 @@ int main() {
                 break;
 
             case 5:
-                setLED(0);
-                printf("\nExiting program...\n");
-                printf("Warning LED: OFF\n");
+                gpioTerminate();
                 break;
 
             default:
