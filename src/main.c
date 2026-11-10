@@ -5,7 +5,7 @@
 #include <pigpio.h>
 
 #define LED_PIN 17
-#define FILE_NAME "temperature_log.csv"
+#define FILE_NAME "../temperature_log.csv"
 
 /* Function to control LED on GPIO 17 */
 void setLED(int on) {
@@ -172,7 +172,7 @@ int main() {
                 calculateAverage();
                 break;
 
-            case 4:2
+            case 4:
                 displayRecords();
                 break;
 
