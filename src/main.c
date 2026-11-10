@@ -172,7 +172,7 @@ int main() {
                 calculateAverage();
                 break;
 
-            case 4:
+            case 4:2
                 displayRecords();
                 break;
 
